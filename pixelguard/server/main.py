@@ -1,15 +1,22 @@
 from __future__ import annotations
 
+import os
 import time
 import threading
 import logging
 import json
 import sys
-from collections import defaultdict
 from typing import Any
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException, Request, Response
+# Load .env BEFORE any os.environ reads so PG_PROVIDER etc. are set
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv is optional; fall back to OS env
+
+from fastapi import APIRouter, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
@@ -223,34 +230,38 @@ class RequestMiddleware(BaseHTTPMiddleware):
 # FastAPI App
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ── CORS — configurable via PG_ALLOWED_ORIGINS (comma-separated, default: permissive dev)
+_raw_origins = os.environ.get("PG_ALLOWED_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080")
+ALLOWED_ORIGINS: list[str] = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app = FastAPI(
     title="PixelGuard Server",
     version="2.0.0",
     description="Privacy-first visual perception for browser agents. VLM action selection by candidate ID — never coordinates.",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Request-ID"],
     expose_headers=["X-Request-ID", "X-Response-Time-ms"],
 )
 
 app.add_middleware(RequestMiddleware)
+
+# ── Versioned router (/api/v1/) ──────────────────────────────────────────────
+v1 = APIRouter(prefix="/api/v1", tags=["v1"])
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Endpoints
 # ═══════════════════════════════════════════════════════════════════════════════
 
-@app.get("/health")
-def health():
-    """Liveness + readiness check.
-    
-    Returns provider status, circuit breaker state, and Ollama reachability.
-    A 200 means the server is alive; 'ollama_reachable' tells you if the VLM is ready.
-    """
+def _health_payload() -> dict[str, Any]:
     reachable = check_ollama_reachable()
     cb = get_circuit_breaker_state()
     return {
@@ -263,9 +274,41 @@ def health():
     }
 
 
+@app.get("/health")
+def health():
+    """Liveness + readiness check (root alias for backward compat)."""
+    return _health_payload()
+
+
+@v1.get("/health")
+def health_v1():
+    """Liveness + readiness check.
+
+    Returns provider status, circuit breaker state, and Ollama reachability.
+    A 200 means the server is alive; 'ollama_reachable' tells you if the VLM is ready.
+    """
+    return _health_payload()
+
+
+@v1.get("/status")
+def status_v1():
+    """Aggregate system status — health + metrics + CB in one call."""
+    return {
+        "health": _health_payload(),
+        "metrics": metrics.to_dict(),
+        "allowed_origins": ALLOWED_ORIGINS,
+    }
+
+
 @app.get("/metrics")
 def get_metrics():
     """Prometheus-style metrics endpoint for observability."""
+    return metrics.to_dict()
+
+
+@v1.get("/metrics")
+def get_metrics_v1():
+    """Prometheus-style metrics endpoint (versioned)."""
     return metrics.to_dict()
 
 
@@ -275,7 +318,15 @@ def do_warmup():
     return {"warmed": warmed, "vlm_ms": vlm_ms}
 
 
-@app.post("/select-action")
+@v1.post("/warmup")
+def do_warmup_v1():
+    """Warm up the VLM model (versioned)."""
+    warmed, vlm_ms = warmup()
+    return {"warmed": warmed, "vlm_ms": vlm_ms}
+
+
+@v1.post("/select-action")
+@app.post("/select-action")  # backward-compat root alias
 def select_action(raw: dict):
     # Validate against schema
     try:
@@ -357,11 +408,38 @@ def select_action(raw: dict):
     return response.model_dump()
 
 
+# ── Register versioned router ────────────────────────────────────────────────
+app.include_router(v1)
+
+
+# ── Lifecycle events ─────────────────────────────────────────────────────────
+
+_BANNER = """
+╔══════════════════════════════════════════════════════════════╗
+║          🛡️  P I X E L G U A R D   S E R V E R   v2.0.0     ║
+║       Privacy-First Visual Perception for Browser Agents     ║
+╠══════════════════════════════════════════════════════════════╣
+║  Provider : {provider:<51}║
+║  Model    : {model:<51}║
+║  API docs : http://localhost:8000/api/docs                   ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
 @app.on_event("startup")
 async def startup():
-    logger.info("PixelGuard server v2.0.0 starting — provider=%s model=%s", PG_PROVIDER, PG_MODEL)
+    banner = _BANNER.format(
+        provider=PG_PROVIDER[:51],
+        model=PG_MODEL[:51],
+    )
+    for line in banner.strip().splitlines():
+        logger.info(line)
+    logger.info("CORS allowed_origins=%s", ALLOWED_ORIGINS)
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    logger.info("PixelGuard server shutting down — requests=%d errors=%d", metrics.request_count, metrics.error_count)
+    logger.info(
+        "PixelGuard server shutting down — requests=%d errors=%d rate_limit_hits=%d",
+        metrics.request_count, metrics.error_count, metrics.rate_limit_hits,
+    )

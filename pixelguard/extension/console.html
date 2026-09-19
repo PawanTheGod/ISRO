@@ -1,78 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PixelGuard Console</title>
-<link rel="stylesheet" href="console.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelGuard Console</title>
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="console.css">
 </head>
 <body>
 <div id="pg-console">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
   <header class="pg-header">
-    <h1>PixelGuard Console</h1>
-    <span class="pg-tagline">Privacy-First Visual Perception</span>
+    <div class="pg-logo" title="PixelGuard">🛡️</div>
+    <div class="pg-header-text">
+      <h1>PixelGuard</h1>
+      <span class="pg-tagline">Privacy-First Visual Perception</span>
+    </div>
+    <div class="pg-header-badges">
+      <span class="pg-badge pg-badge-version">
+        <span class="pg-badge-dot"></span>v2.0.0
+      </span>
+      <span class="pg-badge pg-badge-provider" id="pg-provider-badge">
+        <span class="pg-badge-dot"></span><span id="pg-provider-text">provider</span>
+      </span>
+      <span class="pg-badge pg-badge-cb" id="pg-cb-badge" data-tip="Circuit Breaker State">
+        <span class="pg-badge-dot"></span><span id="pg-cb-text">cb: —</span>
+      </span>
+    </div>
   </header>
 
+  <!-- ── Goal & Controls ─────────────────────────────────────────────────── -->
   <div class="pg-controls">
     <div class="pg-goal-row">
-      <input type="text" id="pg-goal" placeholder="Enter your goal, e.g. Fill the application form with my profile and submit" class="pg-goal-input">
-      <button id="pg-run-btn" class="pg-btn pg-btn-primary">Run</button>
-      <label class="pg-auto-toggle">
+      <input
+        type="text"
+        id="pg-goal"
+        class="pg-goal-input"
+        placeholder="Enter goal — e.g. Fill the application form with my profile and submit"
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <button id="pg-run-btn" class="pg-btn pg-btn-primary">
+        ▶ Run
+      </button>
+      <label class="pg-auto-toggle" data-tip="Automatically proceed to next step">
         <input type="checkbox" id="pg-auto-run"> Auto-run
       </label>
-      <button id="pg-export-csv" class="pg-btn pg-btn-secondary">Export CSV</button>
-      <button id="pg-save-payload" class="pg-btn pg-btn-secondary">Save last payload</button>
-      <button id="pg-resource-btn" class="pg-btn pg-btn-secondary">Resource Report</button>
+      <button id="pg-export-csv" class="pg-btn pg-btn-secondary" data-tip="Export timing log as CSV">
+        ⬇ CSV
+      </button>
+      <button id="pg-save-payload" class="pg-btn pg-btn-secondary" data-tip="Save last payload as JSON">
+        💾 Payload
+      </button>
+      <button id="pg-resource-btn" class="pg-btn pg-btn-secondary" data-tip="Download resource usage report">
+        📊 Report
+      </button>
     </div>
-    <div id="pg-status" class="pg-status">Idle</div>
+
+    <div class="pg-status-row">
+      <div class="pg-status-indicator idle" id="pg-status-dot"></div>
+      <span id="pg-status" class="idle">Idle — enter a goal and click Run</span>
+    </div>
   </div>
 
+  <!-- ── Screenshot Panels ──────────────────────────────────────────────── -->
   <div class="pg-panels">
     <div class="pg-panel">
-      <h2>Original</h2>
-      <img id="pg-original" class="pg-screenshot" alt="Original capture">
+      <div class="pg-panel-header">
+        <div class="pg-panel-icon original">📸</div>
+        <h2>Original Capture</h2>
+      </div>
+      <img id="pg-original" class="pg-screenshot" alt="Original capture" loading="lazy">
     </div>
     <div class="pg-panel">
-      <h2>Sanitized</h2>
-      <img id="pg-sanitized" class="pg-screenshot" alt="Redacted capture">
+      <div class="pg-panel-header">
+        <div class="pg-panel-icon sanitized">🔒</div>
+        <h2>Sanitized (Redacted)</h2>
+      </div>
+      <img id="pg-sanitized" class="pg-screenshot" alt="Redacted capture" loading="lazy">
     </div>
   </div>
 
-  <div class="pg-section">
-    <h2>Candidates</h2>
-    <table id="pg-candidates" class="pg-candidates-table">
-      <thead>
-        <tr><th>ID</th><th>Tag</th><th>Label</th><th>Type</th><th>Masked Text</th><th>Bbox</th><th>Editable</th></tr>
-      </thead>
-      <tbody id="pg-candidates-body"></tbody>
-    </table>
+  <!-- ── Real-time Stage Timing Bars ────────────────────────────────────── -->
+  <div class="pg-metrics-card" id="pg-metrics-card">
+    <div class="pg-metrics-header">
+      <span class="pg-metrics-title">⚡ Pipeline Latency</span>
+      <span class="pg-total-ms" id="pg-total-ms">—<span>ms total</span></span>
+    </div>
+    <div class="pg-metric-bars" id="pg-metric-bars">
+      <!-- populated by JS -->
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Capture</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill capture" id="bar-capture" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-capture">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Vision</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill vision" id="bar-vision" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-vision">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Detect</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill detect" id="bar-detect" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-detect">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Redact</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill redact" id="bar-redact" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-redact">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Server</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill server" id="bar-server" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-server">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">VLM</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill vlm" id="bar-vlm" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-vlm">—</span>
+      </div>
+      <div class="pg-metric-bar-row">
+        <span class="pg-metric-label">Execute</span>
+        <div class="pg-metric-track"><div class="pg-metric-fill execute" id="bar-execute" style="width:0%"></div></div>
+        <span class="pg-metric-val" id="val-execute">—</span>
+      </div>
+    </div>
   </div>
 
-  <div class="pg-section">
-    <h2>Payload (sent to server)</h2>
-    <pre id="pg-payload" class="pg-payload-pre"></pre>
+  <!-- ── Action Response ─────────────────────────────────────────────────── -->
+  <div class="pg-section" id="pg-action-section">
+    <div class="pg-section-header">
+      <span class="pg-section-title">
+        <span class="pg-section-icon">🎯</span>
+        Action Response
+      </span>
+      <div id="pg-action-header-badges"></div>
+    </div>
+    <div class="pg-section-body">
+      <pre id="pg-action" class="pg-action-pre">Awaiting first run…</pre>
+    </div>
   </div>
 
+  <!-- ── Candidates Table ────────────────────────────────────────────────── -->
   <div class="pg-section">
-    <h2>Action Response</h2>
-    <pre id="pg-action" class="pg-action-pre"></pre>
+    <div class="pg-section-header">
+      <span class="pg-section-title">
+        <span class="pg-section-icon">🔍</span>
+        Candidates
+      </span>
+      <span id="pg-candidate-count" style="font-size:11px;color:var(--text-3);">0 elements</span>
+    </div>
+    <div class="pg-section-body" style="padding:0;">
+      <div class="pg-table-wrapper" style="padding:0 18px 14px;">
+        <table id="pg-candidates" class="pg-candidates-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tag</th>
+              <th>Label</th>
+              <th>Type</th>
+              <th>Masked Text</th>
+              <th>BBox (x,y,w,h)</th>
+              <th>Editable</th>
+            </tr>
+          </thead>
+          <tbody id="pg-candidates-body">
+            <tr class="pg-empty-row"><td colspan="7">No candidates yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
+  <!-- ── Payload JSON ─────────────────────────────────────────────────────── -->
   <div class="pg-section">
-    <h2>Timings</h2>
-    <div id="pg-timings" class="pg-timings-strip"></div>
+    <div class="pg-section-header">
+      <span class="pg-section-title">
+        <span class="pg-section-icon">📦</span>
+        Payload (sent to server)
+      </span>
+      <span id="pg-payload-kb" style="font-size:11px;color:var(--text-3);font-family:'JetBrains Mono',monospace;">— KB</span>
+    </div>
+    <div class="pg-section-body">
+      <pre id="pg-payload" class="pg-payload-pre">Awaiting first run…</pre>
+    </div>
   </div>
 
+  <!-- ── Timing History Log ──────────────────────────────────────────────── -->
   <div class="pg-section">
-    <h2>Timing Log</h2>
-    <table id="pg-timing-log" class="pg-timing-log">
-      <thead>
-        <tr><th>Run</th><th>Capture</th><th>Vision</th><th>Detect</th><th>Redact</th><th>Payload KB</th><th>Server</th><th>Execute</th><th>Total</th><th>Action</th><th>Conf</th></tr>
-      </thead>
-      <tbody id="pg-timing-log-body"></tbody>
-    </table>
+    <div class="pg-section-header">
+      <span class="pg-section-title">
+        <span class="pg-section-icon">📈</span>
+        Timing Log
+      </span>
+      <span id="pg-run-count" style="font-size:11px;color:var(--text-3);">0 runs</span>
+    </div>
+    <div class="pg-section-body" style="padding:0;">
+      <div class="pg-table-wrapper" style="padding:0 18px 14px;">
+        <table id="pg-timing-log" class="pg-timing-log">
+          <thead>
+            <tr>
+              <th>Run</th>
+              <th>Capture</th>
+              <th>Vision</th>
+              <th>Detect</th>
+              <th>Redact</th>
+              <th>KB</th>
+              <th>Server</th>
+              <th>Execute</th>
+              <th>Total</th>
+              <th>Action</th>
+              <th>Conf</th>
+            </tr>
+          </thead>
+          <tbody id="pg-timing-log-body">
+            <tr class="pg-empty-row"><td colspan="11">No runs yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div>
+
+</div><!-- /#pg-console -->
 
 <script type="module" src="console.js"></script>
 </body>
