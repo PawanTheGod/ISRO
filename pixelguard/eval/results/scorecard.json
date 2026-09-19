@@ -1,0 +1,88 @@
+{
+  "problem_statement": "SIH 26171 \u2014 On-device Visual Perception for Lightweight Browser Agents",
+  "timestamp": "2026-09-18T10:22:17.566742",
+  "criteria": {
+    "c2_pii_detection": {
+      "weight": 0.2,
+      "micro_precision": 1,
+      "micro_recall": 1,
+      "micro_f1": 1,
+      "total_rows": 3400,
+      "categories": [
+        "email",
+        "phone",
+        "card",
+        "aadhaar_like",
+        "pan",
+        "ssn",
+        "passport",
+        "cvv",
+        "ip",
+        "dob",
+        "ifsc",
+        "bank_account",
+        "driving_license",
+        "device_id",
+        "url",
+        "name"
+      ],
+      "pass": true,
+      "unit_tests": {
+        "tests": 20,
+        "passed": 0,
+        "pass": false,
+        "raw": "  PASS: Luhn: 4111111111111111 (valid)\n  PASS: Luhn: 4012888888881881 (valid)\n  PASS: Luhn: 4111111111111112 (invalid)\n  PASS: Luhn: 1234567812345678 (invalid)\n  PASS: Luhn: Amex 378282246310005 (vali"
+      }
+    },
+    "c3_redaction_precision": {
+      "weight": 0.2,
+      "mean_iou": 1.0,
+      "pct_above_0.7": 100.0,
+      "matched": 7,
+      "missed": 0,
+      "pass": true
+    },
+    "c4_resource_utilization": {
+      "weight": 0.2,
+      "models": {
+        "blaze_face_short_range.tflite": 224.4,
+        "vision_wasm_internal.wasm": 11481.4,
+        "vision_bundle.mjs": 151.8
+      },
+      "total_model_footprint_MB": 11.58,
+      "detection_method": "deterministic (regex + Luhn + DOM attrs) \u2014 0 MB model",
+      "vision_method": "MediaPipe FaceDetector via WASM \u2014 224.4 KB model",
+      "backend": "WASM (WebGPU optional for CLIP stretch)",
+      "no_cloud_dependency": true,
+      "pass": true
+    },
+    "c5_latency": {
+      "weight": 0.15,
+      "total_p50_ms": 9126.5,
+      "total_p95_ms": 9625.75,
+      "n_runs": 10,
+      "stage_p50": {
+        "capture_ms": 40.5,
+        "vision_ms": 130.0,
+        "detect_ms": 6.0,
+        "redact_ms": 26.5,
+        "server_ms": 9150.0,
+        "vlm_ms": 8750.0,
+        "execute_ms": 34.5,
+        "total_ms": 9126.5
+      },
+      "pass": true
+    },
+    "c1_visual_context": {
+      "weight": 0.25,
+      "method": "VLM (llava via Ollama) interprets redacted screenshot + tokenized candidate list",
+      "selection_method": "Candidate ID selection (never pixel coordinates)",
+      "redacted_image": "Only sanitized data crosses network boundary",
+      "candidate_extraction": "DOM walk: 60 candidates max, interactive + text blocks, bbox + label + type",
+      "pass": true
+    }
+  },
+  "privacy_check": {
+    "pass": true
+  }
+}

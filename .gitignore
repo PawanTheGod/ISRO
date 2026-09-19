@@ -1,0 +1,38 @@
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Build artifacts
+*.zip
+
+# Large model files (>100MB, excluded from GitHub — download via extension/models/download_models.py)
+pixelguard/extension/models/clip/model_quantized.onnx
+pixelguard/extension/models/ner/model_quantized.onnx
+*.onnx

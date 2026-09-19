@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelGuard Console</title>
+<link rel="stylesheet" href="console.css">
+</head>
+<body>
+<div id="pg-console">
+  <header class="pg-header">
+    <h1>PixelGuard Console</h1>
+    <span class="pg-tagline">Privacy-First Visual Perception</span>
+  </header>
+
+  <div class="pg-controls">
+    <div class="pg-goal-row">
+      <input type="text" id="pg-goal" placeholder="Enter your goal, e.g. Fill the application form with my profile and submit" class="pg-goal-input">
+      <button id="pg-run-btn" class="pg-btn pg-btn-primary">Run</button>
+      <label class="pg-auto-toggle">
+        <input type="checkbox" id="pg-auto-run"> Auto-run
+      </label>
+      <button id="pg-export-csv" class="pg-btn pg-btn-secondary">Export CSV</button>
+      <button id="pg-save-payload" class="pg-btn pg-btn-secondary">Save last payload</button>
+      <button id="pg-resource-btn" class="pg-btn pg-btn-secondary">Resource Report</button>
+    </div>
+    <div id="pg-status" class="pg-status">Idle</div>
+  </div>
+
+  <div class="pg-panels">
+    <div class="pg-panel">
+      <h2>Original</h2>
+      <img id="pg-original" class="pg-screenshot" alt="Original capture">
+    </div>
+    <div class="pg-panel">
+      <h2>Sanitized</h2>
+      <img id="pg-sanitized" class="pg-screenshot" alt="Redacted capture">
+    </div>
+  </div>
+
+  <div class="pg-section">
+    <h2>Candidates</h2>
+    <table id="pg-candidates" class="pg-candidates-table">
+      <thead>
+        <tr><th>ID</th><th>Tag</th><th>Label</th><th>Type</th><th>Masked Text</th><th>Bbox</th><th>Editable</th></tr>
+      </thead>
+      <tbody id="pg-candidates-body"></tbody>
+    </table>
+  </div>
+
+  <div class="pg-section">
+    <h2>Payload (sent to server)</h2>
+    <pre id="pg-payload" class="pg-payload-pre"></pre>
+  </div>
+
+  <div class="pg-section">
+    <h2>Action Response</h2>
+    <pre id="pg-action" class="pg-action-pre"></pre>
+  </div>
+
+  <div class="pg-section">
+    <h2>Timings</h2>
+    <div id="pg-timings" class="pg-timings-strip"></div>
+  </div>
+
+  <div class="pg-section">
+    <h2>Timing Log</h2>
+    <table id="pg-timing-log" class="pg-timing-log">
+      <thead>
+        <tr><th>Run</th><th>Capture</th><th>Vision</th><th>Detect</th><th>Redact</th><th>Payload KB</th><th>Server</th><th>Execute</th><th>Total</th><th>Action</th><th>Conf</th></tr>
+      </thead>
+      <tbody id="pg-timing-log-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module" src="console.js"></script>
+</body>
+</html>

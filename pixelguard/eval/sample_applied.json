@@ -1,0 +1,9 @@
+﻿[
+  {"category": "name", "bboxDevicePx": [96, 60, 540, 22]},
+  {"category": "email", "bboxDevicePx": [96, 90, 540, 22]},
+  {"category": "phone", "bboxDevicePx": [96, 120, 540, 22]},
+  {"category": "aadhaar_like", "bboxDevicePx": [96, 150, 540, 22]},
+  {"category": "card", "bboxDevicePx": [96, 180, 540, 22]},
+  {"category": "face", "bboxDevicePx": [420, 300, 120, 150]},
+  {"category": "password", "bboxDevicePx": [412, 552, 280, 36]}
+]

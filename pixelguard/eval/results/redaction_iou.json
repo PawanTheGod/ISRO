@@ -1,0 +1,51 @@
+{
+  "mean_iou": 1.0,
+  "pct_above_0.7": 100.0,
+  "matched": 7,
+  "missed": 0,
+  "total_gt": 7,
+  "per_category": {
+    "aadhaar_like": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "card": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "email": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "face": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "name": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "password": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    },
+    "phone": {
+      "mean_iou": 1.0,
+      "count": 1,
+      "matched": 1,
+      "missed": 0
+    }
+  }
+}

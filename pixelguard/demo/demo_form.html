@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seva Portal — TRAINING SANDBOX (ALL DATA SYNTHETIC)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4f8; color: #1a1a2e; padding: 20px; }
+  .portal-header { background: #1a1a2e; color: #fff; padding: 16px 24px; border-radius: 8px 8px 0 0; }
+  .portal-header h1 { font-size: 22px; }
+  .portal-header .subtitle { font-size: 12px; color: #e94560; font-weight: 600; margin-top: 4px; }
+  .records { background: #fff; border: 1px solid #d1d9e6; border-radius: 0 0 8px 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .records h2 { font-size: 16px; margin-bottom: 12px; color: #16213e; }
+  .records p { line-height: 1.8; font-size: 14px; }
+  .form-container { background: #fff; border: 1px solid #d1d9e6; border-radius: 8px; padding: 24px; max-width: 700px; }
+  .form-container h2 { font-size: 18px; margin-bottom: 20px; color: #16213e; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #333; }
+  .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #c4c9d4; border-radius: 6px; font-size: 14px; font-family: inherit; }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #1a1a2e; box-shadow: 0 0 0 2px rgba(26,26,46,0.1); }
+  .photo-section { margin-bottom: 16px; }
+  .photo-section img { width: 120px; height: 150px; object-fit: cover; border-radius: 6px; border: 2px solid #d1d9e6; display: block; }
+  .photo-section .caption { font-size: 12px; color: #888; margin-top: 6px; }
+  .submit-btn { background: #1a1a2e; color: #fff; border: none; padding: 12px 32px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: 600; margin-top: 8px; }
+  .submit-btn:hover { background: #16213e; }
+  .success-banner { display: none; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 16px; border-radius: 6px; margin-top: 16px; font-size: 15px; font-weight: 600; text-align: center; }
+  .success-banner.show { display: block; }
+</style>
+</head>
+<body>
+<div class="portal-header">
+  <h1>Seva Portal — Citizen Service Application</h1>
+  <div class="subtitle">TRAINING SANDBOX — ALL DATA IS SYNTHETIC — NO REAL PERSONS</div>
+</div>
+
+<div class="records">
+  <h2>Applicant Records (Synthetic)</h2>
+  <p data-pg-sensitive="name">Name: Rohan Sharma</p>
+  <p data-pg-sensitive="email">Email: rohan.sharma@example.com</p>
+  <p data-pg-sensitive="phone">Mobile: +91 98765 43210</p>
+  <p data-pg-sensitive="aadhaar_like">Aadhaar: 2345 6789 0123</p>
+  <p data-pg-sensitive="card">Card: 4111 1111 1111 1111</p>
+  <p>Bank IFSC: SBIN0001234</p>
+</div>
+
+<div class="form-container">
+  <h2>New Service Application</h2>
+  <form id="serviceForm" autocomplete="on">
+    <div class="form-group">
+      <label for="fullName">Full name</label>
+      <input type="text" id="fullName" name="fullName" data-pg-sensitive="name" placeholder="Enter your full name" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" data-pg-sensitive="email" placeholder="Enter your email" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="mobile">Mobile</label>
+      <input type="tel" id="mobile" name="mobile" data-pg-sensitive="phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label for="aadhaar">Aadhaar number</label>
+      <input type="text" id="aadhaar" name="aadhaar" data-pg-sensitive="aadhaar_like" placeholder="XXXX XXXX XXXX">
+    </div>
+    <div class="form-group">
+      <label for="card">Card number</label>
+      <input type="text" id="card" name="card" data-pg-sensitive="card" placeholder="Card number" autocomplete="cc-number">
+    </div>
+    <div class="form-group">
+      <label for="password">Create password</label>
+      <input type="password" id="password" name="password" data-pg-sensitive="password" placeholder="Create a password" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label for="remarks">Remarks</label>
+      <textarea id="remarks" name="remarks" rows="3" placeholder="Any additional remarks"></textarea>
+    </div>
+    <div class="photo-section">
+      <label>Applicant Photo (synthetic)</label>
+      <img src="assets/person.jpg" alt="Synthetic applicant photo" data-pg-sensitive="face">
+      <div class="caption">synthetic image</div>
+    </div>
+    <button type="submit" class="submit-btn">Submit application</button>
+  </form>
+  <div class="success-banner" id="successBanner">Application ARN-2026-DEMO submitted</div>
+</div>
+
+<script>
+  document.getElementById('serviceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('successBanner').classList.add('show');
+  });
+
+  window.__pgGroundTruth = function() {
+    var gt = [];
+    document.querySelectorAll('[data-pg-sensitive]').forEach(function(el) {
+      var cat = el.getAttribute('data-pg-sensitive');
+      var r = el.getBoundingClientRect();
+      gt.push({ category: cat, bbox: [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)] });
+    });
+    return gt;
+  };
+</script>
+</body>
+</html>

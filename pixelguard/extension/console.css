@@ -1,0 +1,41 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f0f1e; color: #e0e0e0; font-size: 14px; }
+#pg-console { max-width: 1400px; margin: 0 auto; padding: 16px; }
+.pg-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+.pg-header h1 { font-size: 24px; color: #7c3aed; }
+.pg-tagline { font-size: 12px; color: #888; }
+
+.pg-controls { background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+.pg-goal-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pg-goal-input { flex: 1; min-width: 300px; padding: 8px 12px; background: #0f0f1e; border: 1px solid #3a3a5e; border-radius: 6px; color: #e0e0e0; font-size: 14px; }
+.pg-goal-input:focus { outline: none; border-color: #7c3aed; }
+.pg-btn { padding: 8px 18px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
+.pg-btn-primary { background: #7c3aed; color: #fff; }
+.pg-btn-primary:hover { background: #6d28d9; }
+.pg-btn-secondary { background: #2a2a4e; color: #c0c0d0; }
+.pg-btn-secondary:hover { background: #3a3a6e; }
+.pg-auto-toggle { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #aaa; cursor: pointer; }
+.pg-auto-toggle input { cursor: pointer; }
+.pg-status { margin-top: 10px; padding: 6px 12px; border-radius: 4px; font-size: 13px; display: inline-block; }
+.pg-status.idle { background: #1a1a2e; color: #888; }
+.pg-status.running { background: #1e3a5f; color: #60a5fa; }
+.pg-status.ok { background: #14532d; color: #4ade80; }
+.pg-status.error { background: #7f1d1d; color: #f87171; }
+.pg-status.blocked { background: #7f1d1d; color: #f87171; font-weight: 700; }
+
+.pg-panels { display: flex; gap: 16px; margin-bottom: 16px; }
+.pg-panel { flex: 1; background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 8px; padding: 12px; }
+.pg-panel h2 { font-size: 14px; color: #aaa; margin-bottom: 8px; }
+.pg-screenshot { width: 100%; border-radius: 4px; min-height: 100px; background: #0a0a1a; }
+
+.pg-section { background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+.pg-section h2 { font-size: 14px; color: #aaa; margin-bottom: 10px; }
+.pg-candidates-table, .pg-timing-log { width: 100%; border-collapse: collapse; font-size: 12px; }
+.pg-candidates-table th, .pg-candidates-table td, .pg-timing-log th, .pg-timing-log td { padding: 5px 8px; text-align: left; border-bottom: 1px solid #2a2a4e; }
+.pg-candidates-table th, .pg-timing-log th { color: #888; font-weight: 600; position: sticky; top: 0; background: #1a1a2e; }
+.pg-candidates-table td { color: #c0c0d0; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-payload-pre, .pg-action-pre { background: #0a0a1a; border: 1px solid #2a2a4e; border-radius: 4px; padding: 10px; font-size: 11px; font-family: 'Consolas', monospace; color: #a0d0a0; max-height: 300px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+.pg-timings-strip { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; }
+.pg-timings-strip .pg-timing-item { background: #0a0a1a; padding: 6px 12px; border-radius: 4px; border: 1px solid #2a2a4e; }
+.pg-timings-strip .pg-timing-item .label { color: #888; }
+.pg-timings-strip .pg-timing-item .value { color: #60a5fa; font-weight: 600; margin-left: 4px; }

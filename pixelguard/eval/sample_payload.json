@@ -1,0 +1,25 @@
+﻿{
+  "session_id": "s-test0001",
+  "step": 1,
+  "user_goal": "Fill the application form with my profile and submit",
+  "screenshot": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "use_image": true,
+  "viewport": { "w": 1280, "h": 720, "dpr": 1 },
+  "candidates": [
+    { "id": "n1", "tag": "p", "role": "", "inputType": null, "label": "", "masked_text": "Name: [NAME]", "bbox": [96,60,540,22], "editable": false },
+    { "id": "n2", "tag": "p", "role": "", "inputType": null, "label": "", "masked_text": "Email: [EMAIL]", "bbox": [96,90,540,22], "editable": false },
+    { "id": "n3", "tag": "p", "role": "", "inputType": null, "label": "", "masked_text": "Mobile: [PHONE]", "bbox": [96,120,540,22], "editable": false },
+    { "id": "n4", "tag": "p", "role": "", "inputType": null, "label": "", "masked_text": "Aadhaar: [AADHAAR]", "bbox": [96,150,540,22], "editable": false },
+    { "id": "n5", "tag": "p", "role": "", "inputType": null, "label": "", "masked_text": "Card: [CARD]", "bbox": [96,180,540,22], "editable": false },
+    { "id": "n6", "tag": "input", "role": "textbox", "inputType": "text", "label": "Full name", "masked_text": "", "bbox": [412,262,280,36], "editable": true },
+    { "id": "n7", "tag": "input", "role": "textbox", "inputType": "email", "label": "Email", "masked_text": "", "bbox": [412,320,280,36], "editable": true },
+    { "id": "n8", "tag": "input", "role": "textbox", "inputType": "tel", "label": "Mobile", "masked_text": "", "bbox": [412,378,280,36], "editable": true },
+    { "id": "n9", "tag": "input", "role": "textbox", "inputType": "text", "label": "Aadhaar number", "masked_text": "", "bbox": [412,436,280,36], "editable": true },
+    { "id": "n10", "tag": "input", "role": "textbox", "inputType": "text", "label": "Card number", "masked_text": "", "bbox": [412,494,280,36], "editable": true },
+    { "id": "n11", "tag": "input", "role": "textbox", "inputType": "password", "label": "Create password", "masked_text": "", "bbox": [412,552,280,36], "editable": true },
+    { "id": "n12", "tag": "textarea", "role": "textbox", "inputType": null, "label": "Remarks", "masked_text": "", "bbox": [412,610,280,72], "editable": true },
+    { "id": "n13", "tag": "button", "role": "button", "inputType": null, "label": "Submit application", "masked_text": "Submit application", "bbox": [412,700,180,42], "editable": false }
+  ],
+  "history": [],
+  "client_meta": { "backend": "wasm", "capture_ms": 41, "vision_ms": 0, "detect_ms": 6, "redact_ms": 27 }
+}

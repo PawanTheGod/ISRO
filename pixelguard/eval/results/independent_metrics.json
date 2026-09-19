@@ -1,0 +1,109 @@
+{
+  "test_type": "independent_hand_labeled",
+  "per_category": {
+    "aadhaar_like": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "bank_account": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "card": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "cvv": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "device_id": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "dob": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "driving_license": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "email": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "ifsc": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "ip": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "name": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "pan": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "passport": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    },
+    "phone": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "ssn": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 2
+    },
+    "url": {
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 1
+    }
+  },
+  "micro_avg": {
+    "precision": 1,
+    "recall": 1,
+    "f1": 1
+  },
+  "total_rows": 30,
+  "row_accuracy": 1,
+  "generated_at": "2026-09-18T05:22:57.666Z"
+}
